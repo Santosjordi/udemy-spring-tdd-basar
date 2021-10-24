@@ -20,23 +20,31 @@ import com.udemyspringtdd.hoaxifybackend.user.User;
 @ActiveProfiles("test")
 public class UserControllerTest {
 
+    public static final String API_1_0_USERS = "/api/1.0/users";
     @Autowired
     TestRestTemplate testRestTemplate;
 
     @Test
     public void postUser_whenUserIsValid_receiveOK(){
-        User user = new User();
-        user.setUsername("test-user");
-        user.setDisplayName("test-display");
-        user.setPassword("P4ssword");
+        User user = createValidUser();
 
-        ResponseEntity<Object> response = testRestTemplate.postForEntity("/api/1.0/users", user, Object.class);
+        ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test
-    public void test(){
+    private User createValidUser() {
+        User user = new User();
+        user.setUsername("test-user");
+        user.setDisplayName("test-display");
+        user.setPassword("P4ssword");
+        return user;
+    }
 
+    @Test
+    public void postUser_whenUserIsValid_postUserToDataBase(){
+        User user = createValidUser();
+        testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
+        assertThat(userRepository.count()).isEqualTo(1);
     }
 }

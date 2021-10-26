@@ -8,8 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-@Data
 @Entity
+@Data
 public class User implements Serializable {
 
     @Id

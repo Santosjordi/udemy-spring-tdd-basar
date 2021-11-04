@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.1.10",
+    "axios": "^0.24.0",
     "axios-version": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -41,6 +42,7 @@
     "@testing-library/react": "^11.2.2",
     "redux-logger": "^3.0.6"
   },
+  "proxy": "http://localhost:8080",
   "jest": {
     "resetMocks": false
   }

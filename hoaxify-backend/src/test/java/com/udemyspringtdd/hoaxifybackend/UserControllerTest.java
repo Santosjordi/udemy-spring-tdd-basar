@@ -233,6 +233,16 @@ public class UserControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
+    @Test
+    public void postUser_whenOtherUserHasSameUsername_receiveDuplicatedUsernameMessage(){
+        userRepository.save(createValidUser()); //saves the test-user into the database
+        User user = createValidUser(); // creates a second user with the same data
+
+        ResponseEntity<ApiError> response = postSignupRequest(user, ApiError.class);
+        Map<String, String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("username")).isEqualTo("Username already in use");
+    }
+
     public <T> ResponseEntity<T> postSignupRequest(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_1_0_USERS, request, response);
     }

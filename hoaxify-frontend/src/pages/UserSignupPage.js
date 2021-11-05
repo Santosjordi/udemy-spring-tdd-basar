@@ -7,7 +7,8 @@ export class UserSignupPage extends React.Component {
         username: '',
         password: '',
         passwordRepeat: '',
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors: {}
     };
 
     onChangeDisplayName = (event) => {
@@ -46,7 +47,8 @@ export class UserSignupPage extends React.Component {
             .then((response) => {
                 this.setState({pendingApiCall: false});
             })
-        .catch((Error) => {
+        .catch((apiError) => {
+            let errors = {...this.state.errors}
             this.setState({pendingApiCall: false});
         });
     };

@@ -5,8 +5,7 @@ import {
     fireEvent
 } from "@testing-library/react";
 import Input from './Input';
-
-beforeEach(cleanup);
+import '@testing-library/jest-dom/extend-expect';
 
 describe('Layout', () => {
     it('has input item', ()=> {

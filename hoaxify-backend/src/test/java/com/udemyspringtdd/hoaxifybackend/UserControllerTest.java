@@ -193,7 +193,7 @@ public class UserControllerTest {
         Map<String, String> validationErrors = response.getBody().getValidationErrors();
         assertThat(validationErrors.get("username")).isEqualTo("Username cannot be null");
     }
-
+    //Chapter 4 - 25 class
     @Test
     public void postUser_whenUserHasNullPassword_receiveGenericNullErrorMessage(){
         User user = createValidUser();

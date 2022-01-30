@@ -15,7 +15,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         // Removes the header "WWW-Authenticate" in the response in case of failure
-        http.httpBasic().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+        http.httpBasic().authenticationEntryPoint(new BasicAuthenticationEntryPoint());
 
         // Spring checks if the request was authorized before allowing the matching request to continue
         http.authorizeRequests()

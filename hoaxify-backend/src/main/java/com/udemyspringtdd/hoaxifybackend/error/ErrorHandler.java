@@ -2,6 +2,7 @@ package com.udemyspringtdd.hoaxifybackend.error;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class ErrorHandler implements ErrorController {
 
     @RequestMapping("/error")
     ApiError handleError(WebRequest webRequest){
-        Map<String, Object> attributes = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(ErrorAttributeOptions.Include.MESSAGE));
+        Map<String, Object> attributes = errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(Include.MESSAGE));
         String message = (String) attributes.get("message");
         String url = (String) attributes.get("path");
         Integer status = (Integer) attributes.get("status");

@@ -3,8 +3,10 @@ package com.udemyspringtdd.hoaxifybackend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.udemyspringtdd.hoaxifybackend.error.ApiError;
+import com.udemyspringtdd.hoaxifybackend.user.User;
 import com.udemyspringtdd.hoaxifybackend.user.UserRepository;
 import com.udemyspringtdd.hoaxifybackend.user.UserService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,6 +76,15 @@ public class LoginControllerTest {
     @Test
     public void postLogin_withValidCredentials_receiveOk(){
         userService.save(TestUtil.createValidUser());
+
+        authenticate();
+        ResponseEntity<Object> response = login(Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void postLogin_withValidCredentials_receiveLoggedInUserId(){
+        User inDB = userService.save(TestUtil.createValidUser());
 
         authenticate();
         ResponseEntity<Object> response = login(Object.class);

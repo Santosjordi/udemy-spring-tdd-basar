@@ -3,6 +3,10 @@ package com.udemyspringtdd.hoaxifybackend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.udemyspringtdd.hoaxifybackend.error.ApiError;
+import com.udemyspringtdd.hoaxifybackend.user.User;
+import com.udemyspringtdd.hoaxifybackend.user.UserRepository;
+import com.udemyspringtdd.hoaxifybackend.user.UserService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,18 @@ public class LoginControllerTest {
 
     @Autowired
     TestRestTemplate testRestTemplate;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Before
+    public void cleanup(){
+        userRepository.deleteAll();
+        testRestTemplate.getRestTemplate().getInterceptors().clear();
+    }
 
     @Test
     public void postLogin_withoutUserCredentials_receiveUnauthorized(){
@@ -54,6 +70,20 @@ public class LoginControllerTest {
         authenticate();
         ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getHeaders().containsKey("WWW-Authenticate")).isFalse();
+    }
+
+    @Test
+    public void postLogin_withValidCredentials_receiveOk(){
+        User user = new User();
+        user.setDisplayName("test-display");
+        user.setUsername("test-user");
+        user.setPassword("P4ssword");
+
+        userService.save(user);
+
+        authenticate();
+        ResponseEntity<Object> response = login(Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     private void authenticate() {

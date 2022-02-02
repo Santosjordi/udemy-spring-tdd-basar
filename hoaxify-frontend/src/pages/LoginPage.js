@@ -22,7 +22,20 @@ export class LoginPage extends React.Component {
         })
     }
 
+    onClickLogin = (event) => {
+        const body = {
+            username: this.state.username,
+            password: this.state.password
+        }
+        this.props.actions.postLogin(body);
+    }
+
     render () {
+
+        let disableSubmit = false;
+        if (this.state.username === ''){
+            disableSubmit = true;
+        }
         return(
             <div className='container'>
                 <h1 className='text-center'>Login</h1>
@@ -42,11 +55,23 @@ export class LoginPage extends React.Component {
                         onChange={this.onChangePassword}/>
                 </div >
                 <div className='text-center'>
-                    <button className='btn btn-primary'>login</button>
+                    <button 
+                        className='btn btn-primary' 
+                        onClick={this.onClickLogin} 
+                        disabled={disableSubmit}>
+                        login
+                    </button>
                 </div>
             </div>
         );
     }
+}
+
+LoginPage.defaultProps = {
+    actions: {
+        postLogin: () => new Promise((resolve, reject) => resolve({}))
+    },
+  dispatch: () => {}
 }
 
 export default LoginPage;

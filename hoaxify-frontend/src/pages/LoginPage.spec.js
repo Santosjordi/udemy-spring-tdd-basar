@@ -38,6 +38,22 @@ describe('login page', () => {
                 } 
             };
         };
+
+        let usernameInput, passwordInput, button;
+
+        const setupForSubmit = (props) => {
+            const rendered = render(<LoginPage {...props}/>);
+
+            const { container, queryByPlaceholderText} = rendered;
+
+            usernameInput = queryByPlaceholderText('Your username');
+            fireEvent.change(usernameInput, changeEvent('my-user-name'));
+            passwordInput = queryByPlaceholderText('Your password');
+            fireEvent.change(passwordInput, changeEvent('P4ssword'));
+            button = container.querySelector('button');
+            return rendered;
+        }
+
         it('sets the username value into state', ()=> {
             const { queryByPlaceholderText } = render(<LoginPage/>);
             const usernameInput = queryByPlaceholderText('Your username');
@@ -52,8 +68,39 @@ describe('login page', () => {
         });
         it('calls postLogin when actions are provided in props and input fields have value', () =>{
             const actions = {
-                postLogin: jest.fn().mockResolvedValue({});
+                postLogin: jest.fn().mockResolvedValue({})
+            };
+
+            setupForSubmit({actions});
+            fireEvent.click(button);
+            expect(actions.postLogin).toHaveBeenCalledTimes(1);
+        });
+        it('does not throw an exception when clicking the button when actions are not provided in props', () =>{
+            setupForSubmit();
+            expect(() => {fireEvent.click(button)}).not.toThrow();
+        });
+        it('calls postLogin with credential in body', () =>{
+            const actions = {
+                postLogin: jest.fn().mockResolvedValue({})
+            };
+
+            setupForSubmit({actions});
+            fireEvent.click(button);
+
+            const expectedUserObject = {
+                username: 'my-user-name',
+                password: 'P4ssword'
             }
+            expect(actions.postLogin).toHaveBeenCalledWith(expectedUserObject);
+        });
+        it('enables the button when username and password is not empty', () => {
+            setupForSubmit();
+            expect(button).not.toBeDisabled();
+        });
+        it('disables the button when username is empty', () => {
+            setupForSubmit();
+            fireEvent.change(usernameInput, changeEvent(''));
+            expect(button).toBeDisabled();
         });
     });
 })

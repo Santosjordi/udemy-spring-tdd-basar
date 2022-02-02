@@ -20,7 +20,7 @@ public class User implements UserDetails{
     @Id
     @GeneratedValue
     @JsonView(Views.Base.class)
-    private Long id;
+    private long id;
 
     @NotNull(message = "{hoaxifybackend.constraints.username.NotNull.message}")
     @Size(min = 4, max = 255)

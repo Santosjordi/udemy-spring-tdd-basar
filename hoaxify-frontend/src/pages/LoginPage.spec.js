@@ -1,5 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import {
+  render,
+  fireEvent,
+  waitForElementToBeRemoved,
+  waitForElement,
+} from '@testing-library/react';
 import { LoginPage } from './LoginPage';
 
 describe('login page', () => {
@@ -102,5 +107,21 @@ describe('login page', () => {
             fireEvent.change(usernameInput, changeEvent(''));
             expect(button).toBeDisabled();
         });
+        it('displays alert when login fails', async () => {
+            const actions = {
+              postLogin: jest.fn().mockRejectedValue({
+                response: {
+                  data: {
+                    message: 'Login failed',
+                  },
+                },
+              }),
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            fireEvent.click(button);
+      
+            const alert = await waitForElement(() => queryByText('Login failed'));
+            expect(alert).toBeInTheDocument();
+          });
     });
 })

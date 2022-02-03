@@ -123,5 +123,43 @@ describe('login page', () => {
             const alert = await waitForElement(() => queryByText('Login failed'));
             expect(alert).toBeInTheDocument();
           });
+          it('clears alert when user changes username', async () => {
+            const actions = {
+              postLogin: jest.fn().mockRejectedValue({
+                response: {
+                  data: {
+                    message: 'Login failed',
+                  },
+                },
+              }),
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            fireEvent.click(button);
+      
+            await waitForElement(() => queryByText('Login failed'));
+            fireEvent.change(usernameInput, changeEvent('updated-username'));
+
+            const alert = queryByText('Login failed');
+            expect(alert).not.toBeInTheDocument();
+          });
+          it('clears alert when user changes password', async () => {
+            const actions = {
+              postLogin: jest.fn().mockRejectedValue({
+                response: {
+                  data: {
+                    message: 'Login failed',
+                  },
+                },
+              }),
+            };
+            const { queryByText } = setupForSubmit({ actions });
+            fireEvent.click(button);
+      
+            await waitForElement(() => queryByText('Login failed'));
+            fireEvent.change(passwordInput, changeEvent('updated-password'));
+
+            const alert = queryByText('Login failed');
+            expect(alert).not.toBeInTheDocument();
+          });
     });
 })

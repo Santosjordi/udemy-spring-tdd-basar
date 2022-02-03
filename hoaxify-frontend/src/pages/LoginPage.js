@@ -31,7 +31,7 @@ export class LoginPage extends React.Component {
         };
         this.props.actions.postLogin(body).catch((error) => {
             if (error.response) {
-                this.setState({ apiError: error.response.data.message });
+                this.setState({ apiError: error.response.data.message }); // 2 HOURS REWRITING THIS SHIT OVER AND OVER AGAIN BECAUSE I MISPELLED 'RESPONSE' FOR 'RESPOSE'
             }
         });
     };

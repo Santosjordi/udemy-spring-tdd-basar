@@ -6,7 +6,7 @@ describe('HomePage', () => {
     describe('Layout', ()=> {
         it('has root page div', () => {
             const { queryByTestId } = render(<HomePage/>);
-            const homePageDiv = queryByTestId('homePage');
+            const homePageDiv = queryByTestId('homepage');
             expect(homePageDiv).toBeInTheDocument();
         });
     });

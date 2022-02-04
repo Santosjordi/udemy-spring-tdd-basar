@@ -26,15 +26,15 @@ export class LoginPage extends React.Component {
 
     onClickLogin = () => {
         const body = {
-            username: this.state.username,
-            password: this.state.password
+          username: this.state.username,
+          password: this.state.password
         };
         this.props.actions.postLogin(body).catch((error) => {
-            if (error.response) {
-                this.setState({ apiError: error.response.data.message }); // 2 HOURS REWRITING THIS SHIT OVER AND OVER AGAIN BECAUSE I MISPELLED 'RESPONSE' FOR 'RESPOSE'
-            }
+          if (error.response) {
+            this.setState({ apiError: error.response.data.message });
+          }
         });
-    };
+      };
 
     render() {
         let disableSubmit = false;

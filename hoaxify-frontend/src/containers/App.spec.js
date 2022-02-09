@@ -20,5 +20,18 @@ describe('App', () => {
     const { container } = setup('/login');
     const header = container.querySelector('h1');
     expect(header).toHaveTextContent('Login');
-  })
+  });
+  it('displays only login LoginPage when url is /login', () => {
+    const { queryByTestId } = setup('/login');
+    expect(queryByTestId('homepage')).not.toBeInTheDocument();
+  });
+  it('displays SignupPage when url is /signup', () => {
+    const { container } = setup('/signup');
+    const header = container.querySelector('h1');
+    expect(header).toHaveTextContent('Sign Up');
+  });
+  it('displays userpage when url is other than /, /login or /signup', () => {
+    const { queryByTestId } = setup('/user1');
+    expect(queryByTestId('userpage')).toBeInTheDocument();
+  });
 });

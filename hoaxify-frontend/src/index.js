@@ -4,13 +4,7 @@ import { HashRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import './index.css';
 import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
-import { UserSignupPage } from './pages/UserSignupPage';
-import { LoginPage } from './pages/LoginPage';
 import * as apiCalls from './api/apiCalls';
-
-const actions = {
-  postLogin: apiCalls.login
-}
 
 ReactDOM.render(
   <HashRouter>

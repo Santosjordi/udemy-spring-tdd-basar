@@ -21,7 +21,20 @@ describe('TopBar', () => {
         it('has link to home from logo', () => {
             const { container } = setup();
             const image = container.querySelector('img');
-            expect(image.parentElement.getAttribute('href')).toBe('/');
+            expect(image.parentElement.getAttribute('href'))
+                .toBe('/');
+        });
+        it('has link to signup', () => {
+            const { queryByText } = setup();
+            const signUpLink = queryByText('Sign Up');
+            expect(signUpLink.getAttribute('href'))
+                .toBe('/signup');
+        });
+        it('has link to login', () => {
+            const { queryByText } = setup();
+            const loginLink = queryByText('Login');
+            expect(loginLink.getAttribute('href'))
+                .toBe('/login');
         });
     });
 });

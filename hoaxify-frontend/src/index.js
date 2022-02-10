@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom/cjs/react-router-dom.min';
 import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import * as apiCalls from './api/apiCalls';

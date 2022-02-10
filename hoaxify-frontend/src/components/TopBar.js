@@ -11,12 +11,21 @@ class TopBar extends React.Component {
                         <Link to="/" className="navbar-brand">
                             <img src={logo} width="60" alt="hoaxify" /> Hoaxify
                         </Link>
+                        <ul className="nav navbar-nav ml-auto">
+                            <li className="nav-item">
+                                <Link to="/signup" className="nav-link">
+                                    Sign Up
+                                </Link>
+                                <Link to="/login" className="nav-link">
+                                    Login
+                                </Link>
+                            </li>
+                        </ul>
                     </nav>
                 </div>
             </div>
         );
     }
 }
-
 
 export default TopBar;

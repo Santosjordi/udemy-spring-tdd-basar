@@ -6,11 +6,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import * as apiCalls from './api/apiCalls';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import authReducer from './redux/authReducer';
+
+const store = createStore(authReducer);
 
 ReactDOM.render(
-  <HashRouter>
-    <App />
-  </HashRouter>, 
+  <Provider store={store}>
+    <HashRouter>
+      <App />
+    </HashRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

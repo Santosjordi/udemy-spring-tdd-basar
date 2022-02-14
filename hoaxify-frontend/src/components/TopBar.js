@@ -7,18 +7,17 @@ class TopBar extends React.Component {
     render() {
         let links = (
             <ul className="nav navbar-nav ml-auto">
-                <li className="nav-item">
-                    <Link to="/signup" className="nav-link">Sign Up</Link>
-                    <Link to="/login" className="nav-link">Login</Link>
-                </li>
+                <li className="nav-item"><Link to="/signup" className="nav-link">Sign Up</Link></li>
+                <li className="nav-item"><Link to="/login" className="nav-link">Login</Link></li>
             </ul>
-        )
-        if (this.props.state.isLoggedIn) {
+        );
+        if (this.props.user.isLoggedIn) {
             links = (
                 <ul className="nav navbar-nav ml-auto">
-                    <li className="nav-item">Logout</li>
+                    <li className="nav-item nav-link">Logout</li>
+                    <li className="nav-item"><Link to={`/${this.props.user.username}`} className="nav-link">My Profile</Link></li>
                 </ul>
-            )
+            );
         }
         return (
             <div className="bg-white shadow-sm mb-2">
@@ -37,8 +36,8 @@ class TopBar extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-      user: state,
+        user: state
     };
-  };
-  
-  export default connect(mapStateToProps)(TopBar);
+};
+
+export default connect(mapStateToProps)(TopBar);

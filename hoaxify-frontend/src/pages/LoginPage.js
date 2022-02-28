@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '../components/Input';
 import ButtonWithProgress from '../components/ButtonWithProgess';
+import {connect} from "react-redux";
 
 export class LoginPage extends React.Component {
     state = {
@@ -28,23 +29,35 @@ export class LoginPage extends React.Component {
 
     onClickLogin = () => {
         const body = {
-          username: this.state.username,
-          password: this.state.password
+            username: this.state.username,
+            password: this.state.password
         };
         this.setState({pendingApiCall: true})
         this.props.actions.postLogin(body).then((response) => {
+            const action = {
+                type: 'login-success',
+                payload: {
+                    //id: response.data.id,
+                    //username: response.data.username,
+                    //displayName: response.data.displayName,
+                    //image: response.data.image
+                    ...response.data,
+                    password: this.state.password
+                }
+            }
+            this.props.dispatch(action)
             this.setState({pendingApiCall: false}, () => {
                 this.props.history.push('/');
             });
         }).catch((error) => {
-          if (error.response) {
-            this.setState({ 
-                apiError: error.response.data.message, 
-                pendingApiCall: false 
-            });
-          }
+            if (error.response) {
+                this.setState({
+                    apiError: error.response.data.message,
+                    pendingApiCall: false
+                });
+            }
         });
-      };
+    };
 
     render() {
         let disableSubmit = false;
@@ -96,7 +109,8 @@ export class LoginPage extends React.Component {
 LoginPage.defaultProps = {
     actions: {
         postLogin: () => new Promise((resolve, reject) => resolve({}))
-    }
+    },
+    dispatch: () => {}
 };
 
-export default LoginPage;
+export default connect()(LoginPage);

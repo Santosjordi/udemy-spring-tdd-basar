@@ -7,10 +7,9 @@ import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import * as apiCalls from './api/apiCalls';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import authReducer from './redux/authReducer';
+import configureStore from "../redux/configureStore";
 
-const store = createStore(authReducer);
+const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>

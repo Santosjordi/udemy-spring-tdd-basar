@@ -3,6 +3,7 @@ package com.udemyspringtdd.hoaxifybackend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.udemyspringtdd.hoaxifybackend.error.ApiError;
+import org.assertj.core.api.ObjectEnumerableAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -264,6 +265,14 @@ public class UserControllerTest {
         userRepository.save(TestUtil.createValidUser());
         ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getNumberOfElements()).isEqualTo(1);
+    }
+
+    @Test
+    public void getUsers_whenThereIsAUserInDB_receiveUserWithoutPassword(){
+        userRepository.save(TestUtil.createValidUser());
+        ResponseEntity<TestPage<Map<String, Object>>> response = getUsers(new ParameterizedTypeReference<TestPage<Map<String, Object>>>() {});
+        Map<String, Object> entity = response.getBody().getContent().get(0);
+        assertThat(entity.containsKey("password")).isFalse();
     }
 
     public <T> ResponseEntity<T> postSignupRequest(Object request, Class<T> response){

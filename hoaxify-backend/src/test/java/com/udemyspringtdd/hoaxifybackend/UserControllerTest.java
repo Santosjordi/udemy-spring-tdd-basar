@@ -280,9 +280,36 @@ public class UserControllerTest {
         IntStream.range(1, 20).mapToObj(i -> "test-user-" + i)
                 .map(TestUtil::createValidUser)
                 .forEach(userRepository::save);
-        String path = API_1_0_USERS + "?currentPage=0&pageSize=3";
+        String path = API_1_0_USERS + "?page=0&size=3";
         ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeNotProvided_receivePageSizeAsTen(){
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeGreaterThan100_receivePageSizeAs100(){
+        String path = API_1_0_USERS + "?size=500";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(100);
+    }
+
+    @Test
+    public void getUsers_whenNegativePageSizeIsProvided_receivePageSizeAsTen(){
+        String path = API_1_0_USERS + "?size=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+
+    @Test
+    public void getUsers_whenNegativePageIsProvided_receivePageSizeAsTen(){
+        String path = API_1_0_USERS + "?page=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getNumber()).isEqualTo(0);
     }
 
     public <T> ResponseEntity<T> postSignupRequest(Object request, Class<T> response){

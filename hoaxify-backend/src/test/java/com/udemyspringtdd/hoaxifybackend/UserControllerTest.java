@@ -275,11 +275,25 @@ public class UserControllerTest {
         assertThat(entity.containsKey("password")).isFalse();
     }
 
+    @Test
+    public void getUsers_whenPageIsRequestedFor3ItemsPerPageWhereTheDataBaseHas20Users_receive3Users(){
+        IntStream.range(1, 20).mapToObj(i -> "test-user-" + i)
+                .map(TestUtil::createValidUser)
+                .forEach(userRepository::save);
+        String path = API_1_0_USERS + "?currentPage=0&pageSize=3";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
     public <T> ResponseEntity<T> postSignupRequest(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_1_0_USERS, request, response);
     }
 
     public <T> ResponseEntity<T> getUsers(ParameterizedTypeReference<T> responseType){
         return testRestTemplate.exchange(API_1_0_USERS, HttpMethod.GET, null, responseType);
+    }
+
+    public <T> ResponseEntity<T> getUsers(String path, ParameterizedTypeReference<T> responseType){
+        return testRestTemplate.exchange(path, HttpMethod.GET, null, responseType);
     }
 }

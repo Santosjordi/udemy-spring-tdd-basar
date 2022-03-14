@@ -3,7 +3,7 @@ package com.udemyspringtdd.hoaxifybackend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.udemyspringtdd.hoaxifybackend.error.ApiError;
-import org.assertj.core.api.ObjectEnumerableAssert;
+import com.udemyspringtdd.hoaxifybackend.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -40,6 +41,9 @@ public class UserControllerTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @Before
     public void cleanUp(){
@@ -310,6 +314,23 @@ public class UserControllerTest {
         String path = API_1_0_USERS + "?page=-5";
         ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getNumber()).isEqualTo(0);
+    }
+
+    @Test
+    public void getUsers_whenUserLoggedIn_receivePageWithoutLoggedInUser(){
+        userService.save(TestUtil.createValidUser("user1"));
+        userService.save(TestUtil.createValidUser("user2"));
+        userService.save(TestUtil.createValidUser("user3"));
+        authenticate("user1");
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+
+    }
+
+    private void authenticate(String username) {
+        testRestTemplate
+                .getRestTemplate()
+                .getInterceptors().add(new BasicAuthenticationInterceptor(username, "P4ssword"));
     }
 
     public <T> ResponseEntity<T> postSignupRequest(Object request, Class<T> response){

@@ -23,8 +23,11 @@ import java.util.Map;
 @RequestMapping("/api/1.0")
 public class UserController {
 
-    @Autowired
     UserService userService;
+
+    public UserController(UserService userService){
+        this.userService = userService;
+    }
 
     @PostMapping("/users")
     GenericResponse createUser(@Valid @RequestBody User user) {

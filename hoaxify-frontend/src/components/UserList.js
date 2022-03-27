@@ -1,5 +1,6 @@
 import React from "react";
 import * as apiCalls from '../api/apiCalls';
+import UserListItem from "./UserListItem";
 
 class UserList extends React.Component {
     state = {
@@ -26,11 +27,9 @@ class UserList extends React.Component {
                 <h3 className="card-title m-auto">Users</h3>
                 <div className="list-group list-group-flush" data-testid='userGroup'>
                     {this.state.page.content.map((user) => {
-                        return <div
-                            key={user.username}
-                            className="list-group-item list-group-item-action">
-                            {`${user.displayName}@${user.username}`}
-                        </div> // key is meant to supress browser warning? "Each child in a list must have a unique id"
+                        return (
+                            <UserListItem key={user.username} user={user}/>
+                        ) // key is meant to supress browser warning? "Each child in a list must have a unique id"
                     })}
                 </div>
             </div>

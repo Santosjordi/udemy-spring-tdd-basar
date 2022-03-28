@@ -24,8 +24,8 @@ describe('UserListItem', () => {
         expect(image.src).toContain('/profile.png');
     });
     it('displays users image when user has one', () => {
-        const { container } = render(<UserListItem user={user}/>)
+        const { container } = render(<UserListItem user={user}/>);
         const image = container.querySelector('img');
-        expect(image.src).toContain('/images/profile' + user.image);
+        expect(image.src).toContain('/images/profile/' + user.image);
     });
 })

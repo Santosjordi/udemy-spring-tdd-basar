@@ -4,6 +4,7 @@ import defaultPicture from '../assets/profile.png'
 const UserListItem = props => {
     let imageSource = defaultPicture;
     if (props.user.image){
+        
         imageSource = `/images/profile/${props.user.image}`;
     }
 

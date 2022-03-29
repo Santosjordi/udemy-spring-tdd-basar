@@ -16,9 +16,12 @@ class UserList extends React.Component {
             .listUsers({ page: requestedPage, size: this.state.page.size })
             .then((response) => {
                 this.setState({
-                    page: response.data
+                    page: response.data,
+                    loadError: undefined
                 });
-            });
+            }).catch(error => {
+                this.setState({loadError: 'User load failed'});
+            })
     }
 
     componentDidMount() {
@@ -55,6 +58,7 @@ class UserList extends React.Component {
                         {`next >`}
                     </span>}
                 </div>
+                {this.state.loadError && <span className="text-center text-danger">{this.state.loadError}</span>}
             </div>
         );
     }

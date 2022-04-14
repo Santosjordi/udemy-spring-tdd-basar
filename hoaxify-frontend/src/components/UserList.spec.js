@@ -3,6 +3,8 @@ import { fireEvent, render, waitForDomChange, waitForElement } from '@testing-li
 import UserList from './UserList';
 import * as apiCalls from '../api/apiCalls';
 
+import { MemoryRouter } from 'react-router-dom';
+
 apiCalls.listUsers = jest.fn().mockResolvedValue({
     data: {
         content: [],
@@ -12,7 +14,10 @@ apiCalls.listUsers = jest.fn().mockResolvedValue({
 });
 
 const setup = () => {
-    return render(<UserList />);
+    return render(
+        <MemoryRouter>
+            <UserList />
+        </MemoryRouter>);
 };
 
 const mockedEmptySuccessResponse = {
@@ -168,6 +173,15 @@ describe('UserList', () => {
             );
             expect(previousLink).not.toBeInTheDocument();
         });
+        it('has link to UserPage', async () => {
+            apiCalls.listUsers = jest
+                .fn()
+                .mockResolvedValue(mockSuccessGetMultiPageFirst);
+            const { queryByText, container } = setup();
+            await waitForElement(() => queryByText('display1@user1'));
+            const firstAnchor = container.querySelectorAll('a')[0];
+            expect(firstAnchor.getAttribute('href')).toBe('/user1');
+        });
     });
     describe('Lifecycle', () => {
         it('calls listUsers api when it is redered', () => {
@@ -194,7 +208,7 @@ describe('UserList', () => {
             const { queryByText } = setup();
             const nextLink = await waitForElement(() => queryByText('next >'));
             fireEvent.click(nextLink);
-            const secondPageUser = await waitForElement( () => queryByText('display4@user4'))
+            const secondPageUser = await waitForElement(() => queryByText('display4@user4'))
             expect(secondPageUser).toBeInTheDocument();
         });
         it('loads previous page when users clicks the previous button', async () => {
@@ -206,7 +220,7 @@ describe('UserList', () => {
             const previousLink = await waitForElement(() => queryByText('< previous'));
             fireEvent.click(previousLink);
 
-            const firstPageUser = await waitForElement( () => queryByText('display1@user1'))
+            const firstPageUser = await waitForElement(() => queryByText('display1@user1'))
             expect(firstPageUser).toBeInTheDocument();
         });
         it('displays error message when loading other page fails', async () => {
@@ -218,7 +232,7 @@ describe('UserList', () => {
             const previousLink = await waitForElement(() => queryByText('< previous'));
             fireEvent.click(previousLink);
 
-            const errorMessage = await waitForElement( () => queryByText('User load failed'))
+            const errorMessage = await waitForElement(() => queryByText('User load failed'))
             expect(errorMessage).toBeInTheDocument();
         });
         //solved by declaring loadError as undefined in state
@@ -231,9 +245,9 @@ describe('UserList', () => {
             const { queryByText } = setup();
             const previousLink = await waitForElement(() => queryByText('< previous'));
             fireEvent.click(previousLink);
-            await waitForElement( () => queryByText('User load failed'));
+            await waitForElement(() => queryByText('User load failed'));
             fireEvent.click(previousLink);
-            const errorMessage = await waitForElement( () => queryByText('User load failed'));
+            const errorMessage = await waitForElement(() => queryByText('User load failed'));
             expect(errorMessage).not.toBeInTheDocument();
         });
     })

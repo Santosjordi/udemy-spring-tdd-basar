@@ -1,5 +1,6 @@
 import React from "react";
-import defaultPicture from '../assets/profile.png'
+import defaultPicture from '../assets/profile.png';
+import { Link } from "react-router-dom";
 
 const UserListItem = props => {
     let imageSource = defaultPicture;
@@ -8,7 +9,8 @@ const UserListItem = props => {
     }
 
     return (
-        <div
+        <Link
+            to={`/${props.user.username}`}
             className="list-group-item list-group-item-action">
             <img
                 className="rounded-circle"
@@ -16,7 +18,7 @@ const UserListItem = props => {
                 alt='profile'
                 width='32' height='32' />
             <span className="pl-2">{`${props.user.displayName}@${props.user.username}`}</span>
-        </div>
+        </Link>
     )
 }
 

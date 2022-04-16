@@ -21,3 +21,7 @@ export const setAuthorizationHeaders = ({username, password, isLoggedIn}) => {
 export const listUsers = (param = {page: 0, size: 3}) => {
     axios.get(`/api/1.0/users?page=${param.page || 0}&size=${param.size || 3}`);
 }
+
+export const getUser = (username) => {
+    return axios.get(`/api/1.0/users/${username}`);
+}

@@ -15,6 +15,15 @@ apiCalls.listUsers = jest.fn().mockResolvedValue({
     }
   });
 
+apiCalls.getUser = jest.fn().mockResolvedValue({
+    data: {
+        id: 1,
+        username: 'user1',
+        displayName: 'display1',
+        image: 'profile1.png'
+    }
+})
+
 const setup = (path) => {
     const store = configureStore();
     return render(

@@ -15,7 +15,7 @@ function App() {
                     <Route exact path="/" component={HomePage} />
                     <Route path="/login" component={LoginPage} />
                     <Route path="/signup" component={UserSignupPage} />
-                    <Route path="/:username" component={UserPage} /> {/** not quite sure, revisit 44. React Router min 8 onwards */}
+                    <Route path="/:username" component={UserPage} /> {/** not quite sure, revisit 44. React Router min 8 onwards. The : marks it as a dinamic value */}
                 </Switch>
             </div>
         </div>

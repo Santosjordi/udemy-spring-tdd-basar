@@ -12,35 +12,53 @@ const mockSuccessGetUser = {
     }
 }
 
+const mockFailGetUser = {
+    response: {
+        data: {
+            message: "user nor found"
+        }
+    }
+}
+
 const match = {
     params: {
         username: 'user1'
     }
 }
 
+const setup = (props) => {
+    return render(<UserPage {...props} />);
+}
+
 describe('UserPage', () => {
     describe('Layout', ()=> {
         it('has root page div', () => {
-            const { queryByTestId } = render(<UserPage/>);
+            const { queryByTestId } = setup();
             const userPageDiv = queryByTestId('userpage');
             expect(userPageDiv).toBeInTheDocument();
         });
         it('displays displayName@username when user data is loaded to component', async () => {
             apiCalls.getUser = jest.fn().mockResolvedValue(mockSuccessGetUser);
-            const { queryByText } = render(<UserPage match={match}/>);
+            const { queryByText } = setup({match});
             const text = await waitForElement(() => queryByText('display1@user1'));
             expect(text).toBeInTheDocument();
+        });
+        it('displays not found alert when user not found', async () => {
+            apiCalls.getUser = jest.fn().mockRejectedValue(mockFailGetUser);
+            const { queryByText } = setup({match});
+            const alert = await waitForElement(() => queryByText('user not found'));
+            expect(alert).toBeInTheDocument();
         });
     });
     describe('LifeCycle', () => {
         it('calls getUser when it is rendered', () => {
             apiCalls.getUser = jest.fn().mockResolvedValue(mockSuccessGetUser);
-            render(<UserPage match={match}/>);
+            setup({match});
             expect(apiCalls.getUser).toHaveBeenCalledTimes(1);
         });
         it('calls getUser for user1 when it is rendered with user1 in match', () => {
             apiCalls.getUser = jest.fn().mockResolvedValue(mockSuccessGetUser);
-            render(<UserPage match={match}/>);
+            setup({match});
             expect(apiCalls.getUser).toHaveBeenCalledWith('user1');
         });
     });

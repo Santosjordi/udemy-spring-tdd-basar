@@ -46,7 +46,7 @@ describe('UserPage', () => {
         it('displays not found alert when user not found', async () => {
             apiCalls.getUser = jest.fn().mockRejectedValue(mockFailGetUser);
             const { queryByText } = setup({match});
-            const alert = await waitForElement(() => queryByText('user not found'));
+            const alert = await waitForElement(() => queryByText('User not found'));
             expect(alert).toBeInTheDocument();
         });
     });

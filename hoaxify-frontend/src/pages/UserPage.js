@@ -8,10 +8,21 @@ class UserPage extends React.Component {
     }
 
     componentDidMount() {
+        this.loadUser();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.match.params.username !== this.props.match.params.username) {
+            this.loadUser();
+        }
+      }
+
+    loadUser = () => {
         const username = this.props.match.params.username;
         if (!username) {
             return;
         }
+        this.setState({userNotFound: false}); //moves the state back after a possible failure
         apiCalls.getUser(username).then(response => {
             this.setState({ user: response.data })
         }).catch(error => {
@@ -23,7 +34,7 @@ class UserPage extends React.Component {
         if (this.state.userNotFound) {
             return (
                 <div className="alert alert-danger text-center">
-                    <h5>user not found</h5>
+                    <h5>User not found</h5>
                 </div>)
         }
         return (

@@ -9,7 +9,11 @@ class UserList extends React.Component {
             number: 0,
             size: 3
         }
-    }
+    };
+
+    componentDidMount() { 
+        this.loadData();
+    };
 
     loadData = (requestedPage = 0) => {
         apiCalls
@@ -19,21 +23,17 @@ class UserList extends React.Component {
                     page: response.data,
                     loadError: undefined
                 });
-            }).catch(error => {
+            }).catch((error) => {
                 this.setState({loadError: 'User load failed'});
-            })
-    }
-
-    componentDidMount() {
-        this.loadData();
-    }
+            });
+    };
 
     onClickNext = () => {
         this.loadData(this.state.page.number + 1);
-    }
+    };
     onClickPrevious = () => {
         this.loadData(this.state.page.number - 1);
-    }
+    };
 
     render() {
         return (
@@ -41,22 +41,24 @@ class UserList extends React.Component {
                 <h3 className="card-title m-auto">Users</h3>
                 <div className="list-group list-group-flush" data-testid='userGroup'>
                     {this.state.page.content.map((user) => {
-                        return (
-                            <UserListItem key={user.username} user={user} />
-                        ) // key is meant to supress browser warning? "Each child in a list must have a unique id"
+                        return <UserListItem key={user.username} user={user} /> // key is meant to supress browser warning? "Each child in a list must have a unique id"
                     })}
                 </div>
                 <div>
-                    {!this.state.page.first && <span className="badge badge-light float-left"
-                        style={{ cursor: 'pointer' }}
-                        onClick={this.onClickPrevious}>
-                        {`< previous `}
-                    </span>}
-                    {!this.state.page.last && <span className="badge badge-light float-right"
-                        style={{ cursor: 'pointer' }}
-                        onClick={this.onClickNext}>
-                        {`next >`}
-                    </span>}
+                    {!this.state.page.first &&
+                        (<span className="badge badge-light float-left"
+                            style={{ cursor: 'pointer' }}
+                            onClick={this.onClickPrevious}
+                        >
+                            {`< previous `}</span>
+                        )}
+                    <div>
+                        {!this.state.page.last && <span className="badge badge-light float-right"
+                            style={{ cursor: 'pointer' }}
+                            onClick={this.onClickNext}>
+                            {`next >`}
+                        </span>}
+                    </div>
                 </div>
                 {this.state.loadError && <span className="text-center text-danger">{this.state.loadError}</span>}
             </div>

@@ -7,7 +7,7 @@ import App from './containers/App';
 import reportWebVitals from './reportWebVitals';
 import * as apiCalls from './api/apiCalls';
 import { Provider } from 'react-redux';
-import configureStore from "../redux/configureStore";
+import configureStore from '../src/redux/configureStore'
 
 const store = configureStore();
 

@@ -5,7 +5,8 @@ import * as apiCalls from '../api/apiCalls';
 class UserPage extends React.Component {
     state = {
         user: undefined,
-        userNotFound: false
+        userNotFound: false,
+        isLoadingUser: false
     }
 
     componentDidMount() {
@@ -16,31 +17,46 @@ class UserPage extends React.Component {
         if (prevProps.match.params.username !== this.props.match.params.username) {
             this.loadUser();
         }
-      }
+    }
 
     loadUser = () => {
         const username = this.props.match.params.username;
         if (!username) {
             return;
         }
-        this.setState({userNotFound: false}); //moves the state back after a possible failure
-        apiCalls.getUser(username).then(response => {
-            this.setState({ user: response.data })
-        }).catch(error => {
-            this.setState({ userNotFound: true });
-        });
+        this.setState({ userNotFound: false, isLoadingUser: true }); //moves the state back after a possible failure
+        apiCalls
+            .getUser(username)
+            .then(response => {
+                this.setState({ user: response.data, isLoadingUser: false });
+            })
+            .catch((error) => { // "error" has to be between parenthesis
+                this.setState({ 
+                    userNotFound: true, 
+                    isLoadingUser: false 
+                });
+            });
     }
 
     render() {
-        if (this.state.userNotFound) {
-            return (
+        let pageContent;
+        if (this.state.isLoadingUser) {
+            pageContent = (
+                <div className="d-flex">
+                    <div className="spinner-border text-black-50 m-auto">
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                </div>
+            );
+        } else if (this.state.userNotFound) {
+            pageContent = (
                 <div className="alert alert-danger text-center">
                     <h5>User not found</h5>
                 </div>)
+        } else {
+            pageContent = this.state.user && <ProfileCard user={this.state.user} />
         }
-        return (
-            <div data-testid='userpage'>{this.state.user && <ProfileCard user={this.state.user}/>}</div>
-        )
+        return <div data-testid='userpage'>{pageContent}</div>
     }
 }
 

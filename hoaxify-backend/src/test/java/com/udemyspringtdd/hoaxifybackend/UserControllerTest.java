@@ -13,9 +13,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -357,6 +355,39 @@ public class UserControllerTest {
         assertThat(response.getBody().getMessage().contains("unknown-user")).isTrue();
     }
 
+    @Test
+    public void putUser_whenUnauthorizedUserSendsARequest_receiveUnauthorized(){
+        String path = API_1_0_USERS + "/123";
+        ResponseEntity<Object> response = testRestTemplate.exchange(path, HttpMethod.PUT, null, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Test
+    public void putUser_whenAuthorizedUserSendsUpdateForAnotherUser_receiveForbidden() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        long anotherUserId = user.getId() + 123;
+        ResponseEntity<Object> response = putUser(anotherUserId, null, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void putUser_whenUnauthorizedUserSendsARequest_receiveApiError(){
+        ResponseEntity<ApiError> response = putUser(123,null, ApiError.class);
+        assertThat(response.getBody().getUrl()).contains("users/123");
+    }
+
+    @Test
+    public void putUser_whenAuthorizedUserSendsUpdateForAnotherUser_receiveApiError() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        long anotherUserId = user.getId() + 123;
+        ResponseEntity<ApiError> response = putUser(anotherUserId, null, ApiError.class);
+        assertThat(response.getBody().getUrl()).contains("users/" + anotherUserId);
+    }
+
     private void authenticate(String username) {
         testRestTemplate
                 .getRestTemplate()
@@ -378,5 +409,10 @@ public class UserControllerTest {
     public <T> ResponseEntity<T> getUser(String username, Class<T> responseType){
         String path = API_1_0_USERS + "/" + username;
         return testRestTemplate.getForEntity(path, responseType);
+    }
+
+    public <T> ResponseEntity<T> putUser(long id, HttpEntity<?> requestEntity, Class<T> responseType){
+        String path = API_1_0_USERS + "/" + id;
+        return testRestTemplate.exchange(path, HttpMethod.PUT, requestEntity, responseType);
     }
 }

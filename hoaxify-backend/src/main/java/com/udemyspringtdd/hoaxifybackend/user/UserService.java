@@ -1,6 +1,7 @@
 package com.udemyspringtdd.hoaxifybackend.user;
 
 import com.udemyspringtdd.hoaxifybackend.error.NotFoundException;
+import com.udemyspringtdd.hoaxifybackend.user.vm.UserUpdateVM;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,5 +39,11 @@ public class UserService {
             throw new NotFoundException(username + " not found");
         }
         return inDB;
+    }
+
+    public User update(long id, UserUpdateVM userUpdateVM) {
+        User inDB = userRepository.getOne(id);
+        inDB.setDisplayName(userUpdateVM.getDisplayName());
+        return userRepository.save(inDB);
     }
 }

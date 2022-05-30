@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.udemyspringtdd.hoaxifybackend.error.ApiError;
 import com.udemyspringtdd.hoaxifybackend.user.UserService;
+import com.udemyspringtdd.hoaxifybackend.user.vm.UserUpdateVM;
+import com.udemyspringtdd.hoaxifybackend.user.vm.UserVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -386,6 +388,48 @@ public class UserControllerTest {
         long anotherUserId = user.getId() + 123;
         ResponseEntity<ApiError> response = putUser(anotherUserId, null, ApiError.class);
         assertThat(response.getBody().getUrl()).contains("users/" + anotherUserId);
+    }
+
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveOk() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        UserUpdateVM updatedUser = createValidUserUpdateVM();
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
+        ResponseEntity<Object> response = putUser(user.getId(), requestEntity, Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveDisplayNameUpdated() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        UserUpdateVM updatedUser = createValidUserUpdateVM();
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
+        putUser(user.getId(), requestEntity, Object.class);
+
+        User userInDB = userRepository.findByUsername("user1");
+        assertThat(userInDB.getDisplayName()).isEqualTo(updatedUser.getDisplayName());
+    }
+
+    @Test
+    public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveUserVMWithUpdatedDisplayName() {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+        UserUpdateVM updatedUser = createValidUserUpdateVM();
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
+        ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
+
+        assertThat(response.getBody().getDisplayName()).isEqualTo(updatedUser.getDisplayName());
+    }
+
+    private UserUpdateVM createValidUserUpdateVM() {
+        UserUpdateVM updatedUser = new UserUpdateVM();
+        updatedUser.setDisplayName("newDisplayName");
+        return updatedUser;
     }
 
     private void authenticate(String username) {

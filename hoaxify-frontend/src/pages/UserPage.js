@@ -32,9 +32,9 @@ class UserPage extends React.Component {
                 this.setState({ user: response.data, isLoadingUser: false });
             })
             .catch((error) => { // "error" has to be between parenthesis
-                this.setState({ 
-                    userNotFound: true, 
-                    isLoadingUser: false 
+                this.setState({
+                    userNotFound: true,
+                    isLoadingUser: false
                 });
             });
     }
@@ -56,7 +56,11 @@ class UserPage extends React.Component {
                 </div>)
         } else {
             const isEditable = this.props.loggedInUser.username === this.props.match.params.username;
-            pageContent = this.state.user && <ProfileCard user={this.state.user} isEditable={isEditable}/>
+            pageContent = this.state.user && (
+                <ProfileCard
+                    user={this.state.user}
+                    isEditable={isEditable}
+                />)
         }
         return <div data-testid='userpage'>{pageContent}</div>
     }

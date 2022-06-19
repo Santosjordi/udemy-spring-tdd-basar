@@ -1,5 +1,5 @@
 import React from "react";
-import { render, waitForElement } from "@testing-library/react";
+import { fireEvent, render, waitForElement } from "@testing-library/react";
 import UserPage from './UserPage';
 import { Provider } from 'react-redux';
 import configureStore from "../redux/configureStore";
@@ -104,6 +104,26 @@ describe('UserPage', () => {
             apiCalls.getUser = jest.fn().mockResolvedValue(mockSuccessGetUser);
             setup({match});
             expect(apiCalls.getUser).toHaveBeenCalledWith('user1');
+        });
+    });
+    describe('profileCard interactions', () => {
+        const setupForEdit = async () => {
+            setUserOneLoggedInStorage();
+            apiCalls.getUser = jest.fn().mockResolvedValue(mockSuccessGetUser);
+            const rendered = setup({match});
+            const editButton = await waitForElement(() => rendered.queryByText('Edit'));
+            fireEvent.click(editButton);
+            return rendered;
+        }
+        it('displays edit layout when clicking Edit button', async () => {
+            const { queryByText } = await setupForEdit();
+            expect(queryByText('Save')).toBeInTheDocument();
+        });
+        it('returns back to none after clicking the Cancel button', async () => {
+            const { queryByText } = await setupForEdit();
+            const cancelButton = queryByText('Cancel');
+            fireEvent.click(cancelButton);
+            expect(queryByText('Edit')).toBeInTheDocument();
         });
     });
 });
